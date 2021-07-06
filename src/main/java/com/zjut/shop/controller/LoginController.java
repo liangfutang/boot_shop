@@ -28,17 +28,18 @@ public class LoginController {
         data.put("mobile", "123");
         data.put("email", "123@qq.com");
         data.put("token", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjUwMCwicmlkIjowLCJpYXQiOjE1MTI1NDQyOTksImV4cCI6MTUxMjYzMDY5OX0.eGrsrvwHm-tPsO9r_pxHIQ5i5L1kX9RX444uwnRGaIM");
-        if (StringUtils.isNotBlank(account) && "cuo".equals(account)) {
+        if (!"cuo".equals(account)) {
             result.put("data", data);
         }
         JSONObject meta = new JSONObject();
         meta.put("msg", "登录成功啦");
         meta.put("status", 200);
-        if (StringUtils.isNotBlank(account) && "cuo".equals(account)) {
+        if ("cuo".equals(account)) {
             meta.put("status", 400);
             meta.put("msg", "登录失败啦");
         }
         result.put("meta", meta);
+        log.info("打印即将返回的内容:{}", result);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 }
