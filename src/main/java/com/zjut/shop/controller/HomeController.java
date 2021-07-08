@@ -29,7 +29,7 @@ public class HomeController {
      */
     @GetMapping("/api/private/v1/menus")
     public ResponseEntity<?> menusList(@RequestParam(defaultValue = "0") Integer type) {
-        log.info("本次收到的请求类型:{}", type);
+        log.info("本次收到的请求类型:{},count:{}", type, count.get());
 
         List<AuthVO> menus = new ArrayList<>();
 
@@ -39,8 +39,12 @@ public class HomeController {
         int i = count.incrementAndGet();
         // 模拟请求失败的场景，每三次一个失败
         if (i%4 == 3) {
-            log.info("模拟异常场景");
-            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg(), ResultStatus.MENU_EXEC.getCode()), HttpStatus.OK);
+            log.info("模拟异常场景，状态码是200的");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "200 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.OK);
+        }
+        if (i%4 == 1) {
+            log.info("模拟异常场景，状态码是400的");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "400 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.BAD_REQUEST);
         }
         // 模拟数据为空的场景
         if (i%4 == 2) {
