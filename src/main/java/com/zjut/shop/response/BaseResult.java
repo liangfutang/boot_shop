@@ -24,11 +24,11 @@ public class BaseResult implements Serializable {
     }
 
     public static BaseResult handlerSuccess(String msg, Object data) {
-        BaseResult baseResult = new BaseResult();
-        Meta meta = new Meta(msg, 200);
-        baseResult.setMeta(meta);
-        baseResult.setData(data);
-        return baseResult;
+        return new BaseResult(msg, 200, data);
+    }
+
+    public static BaseResult handlerFailure(String msg, Integer status) {
+        return new BaseResult(msg, status, null);
     }
 
 }
