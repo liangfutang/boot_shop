@@ -36,21 +36,21 @@ public class HomeController {
         if (count.get() >= Integer.MAX_VALUE-10) {
             count.set(0);
         }
-        int i = count.incrementAndGet();
-        // 模拟请求失败的场景，每三次一个失败
-        if (i%4 == 3) {
-            log.info("模拟异常场景，状态码是200的");
-            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "200 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.OK);
-        }
-        if (i%4 == 1) {
-            log.info("模拟异常场景，状态码是400的");
-            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "400 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.BAD_REQUEST);
-        }
-        // 模拟数据为空的场景
-        if (i%4 == 2) {
-            log.info("模拟获取到空菜单的场景");
-            return new ResponseEntity<>(BaseResult.handlerSuccess("获取菜单成功", menus), HttpStatus.OK);
-        }
+//        int i = count.incrementAndGet();
+//        // 模拟请求失败的场景，每三次一个失败
+//        if (i%4 == 3) {
+//            log.info("模拟异常场景，状态码是200的");
+//            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "200 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.OK);
+//        }
+//        if (i%4 == 1) {
+//            log.info("模拟异常场景，状态码是400的");
+//            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.MENU_EXEC.getMsg() + "400 status", ResultStatus.MENU_EXEC.getCode()), HttpStatus.BAD_REQUEST);
+//        }
+//        // 模拟数据为空的场景
+//        if (i%4 == 2) {
+//            log.info("模拟获取到空菜单的场景");
+//            return new ResponseEntity<>(BaseResult.handlerSuccess("获取菜单成功", menus), HttpStatus.OK);
+//        }
 
 
         // 用户列表

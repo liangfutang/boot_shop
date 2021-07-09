@@ -1,6 +1,7 @@
 package com.zjut.shop.controller;
 
 import com.zjut.shop.enums.ResultStatus;
+import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.UserService;
@@ -10,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +29,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/api/private/v1/users")
-    public ResponseEntity<?> userListB(@RequestParam(defaultValue = "1") Integer pageNum
+    public ResponseEntity<?> userList(@RequestParam(defaultValue = "1") Integer pageNum
             , @RequestParam(defaultValue = "5") Integer pageSize) {
         log.info("查询用户列表参数,页码:{},每页数:{}", pageNum, pageSize);
         if (pageNum < 1) {
@@ -48,23 +47,37 @@ public class UserController {
         }
 
         // 模拟的场景数
-        int scenes = 4;
+//        int scenes = 4;
 
         // 模拟异常场景，http状态非200
-        if (currentCount % scenes == 3) {
-            log.info("模拟异常场景，状态码非200的");
-            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.SELECT_EXEC.getMsg() + "400 status", ResultStatus.SELECT_EXEC.getCode()), HttpStatus.BAD_REQUEST);
-        }
+//        if (currentCount % scenes == 3) {
+//            log.info("模拟异常场景，状态码非200的");
+//            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.SELECT_EXEC.getMsg() + "400 status", ResultStatus.SELECT_EXEC.getCode()), HttpStatus.BAD_REQUEST);
+//        }
 
         // 模拟异常场景，http状态非200
-        if (currentCount % scenes == 2) {
-            log.info("模拟异常场景，状态码是200的");
-            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.SELECT_EXEC.getMsg() + "200 status", ResultStatus.SELECT_EXEC.getCode()), HttpStatus.OK);
-        }
+//        if (currentCount % scenes == 2) {
+//            log.info("模拟异常场景，状态码是200的");
+//            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.SELECT_EXEC.getMsg() + "200 status", ResultStatus.SELECT_EXEC.getCode()), HttpStatus.OK);
+//        }
 
         // 模拟正常场景，前端从1开始计算页数，后端从0开始计算
         PageResult<List<UserVO>> userVOS = userService.selectList(new UserParam(pageNum-1, pageSize));
 
         return new ResponseEntity<>(new BaseResult("查询成功", 200, userVOS), HttpStatus.OK);
+    }
+
+    @PutMapping("/api/private/v1/users/{id}/state/{mgState}")
+    public ResponseEntity<?> updateStatus(@PathVariable Integer id, @PathVariable Boolean mgState) {
+        log.info("修改用户状态数据,用户id:{},状态:{}", id, mgState);
+        try {
+            return new ResponseEntity<>(BaseResult.handlerSuccess("更新用户状态成功", userService.updateStatus(id, mgState)), HttpStatus.OK);
+        } catch (ShopRuntimeException sre){
+            log.error("更新用户状态内部异常");
+            return new ResponseEntity<>(BaseResult.handlerFailure(sre.getMessage(), sre.getCode()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("更新用户状态异常");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.UPDATE_USER_STATUS_FAILURE.getMsg(), ResultStatus.UPDATE_USER_STATUS_FAILURE.getCode()), HttpStatus.OK);
+        }
     }
 }

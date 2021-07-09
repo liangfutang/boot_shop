@@ -11,6 +11,9 @@ public class UserVO {
      private String type;
      private String email;
      private String createTime;
+     /**
+      * 用户状态
+      */
      private Boolean mgState;
      private String roleName;
 

@@ -1,5 +1,9 @@
 package com.zjut.shop.service;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.zjut.shop.enums.ResultStatus;
+import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
@@ -10,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,7 +35,7 @@ public class UserServiceImpl implements UserService {
             user.setUserName(userNames[i]);
             user.setEmail(userNameCN[i] + emailAft[i % emailAft.length]);
             user.setMobile(mobile[i]);
-            user.setMgState(random.nextInt(1) != 0);
+            user.setMgState(random.nextInt(2) != 0);
             if (i==0) {
                 user.setRoleName("超级管理员");
                 userVOList.add(user);
@@ -66,9 +71,23 @@ public class UserServiceImpl implements UserService {
         return new PageResult<>(currentUserTotal, userVOList.subList(start, end));
     }
 
-    public static void main(String[] args) {
-        List<UserVO> userVOS = userVOList.subList(0, 6);
-        System.out.println(userVOS);
+    @Override
+    public UserVO updateStatus(Integer id, Boolean mgState) {
+        List<UserVO> users = userVOList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
+        log.info("根据id查出的用户:{}", JSONObject.toJSONString(users));
+        if (users.size() > 1) {
+            log.error("存在多个用户");
+            throw new ShopRuntimeException(ResultStatus.MORE_USER_FAILURE.getCode(), ResultStatus.MORE_USER_FAILURE.getMsg());
+        }
+        if (CollectionUtil.isEmpty(users)) {
+            log.error("没查到相应的用户");
+            throw new ShopRuntimeException(ResultStatus.NO_USER_FAILURE.getCode(), ResultStatus.NO_USER_FAILURE.getMsg());
+        }
+
+        // 修改查到的用户状态
+        UserVO userVO = users.get(0);
+        users.get(0).setMgState(mgState);
+        return userVO;
     }
 
 }
