@@ -11,7 +11,7 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private List<UserVO> userVOList = Collections.synchronizedList(new ArrayList<>());
+    private static List<UserVO> userVOList = Collections.synchronizedList(new ArrayList<>());
     static {
         String[] userNames = {"安雅萍","白百合","白冰","陈钰琪","陈冲","陈红","陈妍希","陈意涵","陈乔恩","陈紫涵","楚月","程愫","蔡依林","陈数"
                 ,"蔡少芬","陈美琪","陈晓旭","陈瑶","程瑷瑗"};
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
             user.setRoleName(roleName[i % roleName.length]);
+            userVOList.add(user);
         }
     }
 
