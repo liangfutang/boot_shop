@@ -30,8 +30,8 @@ public class UserController {
 
     @GetMapping("/api/private/v1/users")
     public ResponseEntity<?> userList(@RequestParam(defaultValue = "1") Integer pageNum
-            , @RequestParam(defaultValue = "5") Integer pageSize) {
-        log.info("查询用户列表参数,页码:{},每页数:{}", pageNum, pageSize);
+            , @RequestParam(defaultValue = "5") Integer pageSize, @RequestParam(required = false) String query) {
+        log.info(String.format("获取用户列表,当前页:%d,每页:%d,查询条件:%s", pageNum, pageSize, query));
         if (pageNum < 1) {
             log.error("起始页不能小于1");
             return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.PAGE_NUM_EXEC.getMsg(), ResultStatus.PAGE_NUM_EXEC.getCode()), HttpStatus.OK);
@@ -62,7 +62,7 @@ public class UserController {
 //        }
 
         // 模拟正常场景，前端从1开始计算页数，后端从0开始计算
-        PageResult<List<UserVO>> userVOS = userService.selectList(new UserParam(pageNum-1, pageSize));
+        PageResult<List<UserVO>> userVOS = userService.selectList(new UserParam(pageNum-1, pageSize, query));
 
         return new ResponseEntity<>(new BaseResult("查询成功", 200, userVOS), HttpStatus.OK);
     }

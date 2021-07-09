@@ -8,6 +8,7 @@ import com.zjut.shop.query.UserParam;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,8 +49,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageResult<List<UserVO>> selectList(UserParam userParam) {
+
+        List<UserVO> selectUserList = null;
+        // 1. 模糊条件查询
+        if (StringUtils.isNotBlank(userParam.getQuery())) {
+            selectUserList = userVOList.stream().filter(one -> this.filterUser(one, userParam.getQuery())).collect(Collectors.toList());
+        } else {
+            selectUserList = userVOList;
+        }
+
+
         // 当前用户数
-        int currentUserTotal = userVOList.size();
+        int currentUserTotal = selectUserList.size();
         // 查询的起点
         int start = userParam.getPageNum() * userParam.getPageSize();
         int end = start + userParam.getPageSize();
@@ -66,9 +77,8 @@ public class UserServiceImpl implements UserService {
             log.info("终点超出了");
             end = currentUserTotal;
         }
-        System.out.println(userVOList.get(11));
 
-        return new PageResult<>(currentUserTotal, userVOList.subList(start, end));
+        return new PageResult<>(currentUserTotal, selectUserList.subList(start, end));
     }
 
     @Override
@@ -88,6 +98,33 @@ public class UserServiceImpl implements UserService {
         UserVO userVO = users.get(0);
         users.get(0).setMgState(mgState);
         return userVO;
+    }
+
+
+    /**
+     * 校验当前的用户数据是否包含当前查询的字符串
+     * @param user
+     * @param query
+     * @return
+     */
+    private boolean filterUser(UserVO user, String query) {
+        if (user==null || StringUtils.isBlank(query)) {
+            return false;
+        }
+
+        String userName = user.getUserName();
+        if (StringUtils.isNotBlank(userName) && userName.contains(query)) return true;
+
+        String email = user.getEmail();
+        if (StringUtils.isNotBlank(email) && email.contains(query)) return true;
+
+        String mobile = user.getMobile();
+        if (StringUtils.isNotBlank(mobile) && mobile.contains(query)) return true;
+
+        String roleName = user.getRoleName();
+        if (StringUtils.isNotBlank(roleName) && roleName.contains(query)) return true;
+
+        return false;
     }
 
 }

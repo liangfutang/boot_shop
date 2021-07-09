@@ -6,9 +6,11 @@ import lombok.Data;
 public class UserParam extends BaseParam{
 
     public UserParam() {}
-
-    public UserParam(Integer pageNum, Integer pageSize) {
+    public UserParam(Integer pageNum, Integer pageSize, String query) {
         this.setPageSize(pageSize);
         this.setPageNum(pageNum);
+        this.query = query;
     }
+
+    private String query;
 }
