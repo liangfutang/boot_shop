@@ -71,7 +71,14 @@ public class HomeController {
         AuthVO rights = new AuthVO();
         rights.setId(130);
         rights.setAuthName("权限管理");
-        rights.setPath("/rights");
+        // 权限管理的二级导航
+        List<AuthVO> rightsChildren = new ArrayList<>();
+        AuthVO one = new AuthVO();
+        one.setId(130);
+        one.setAuthName("权限列表");
+        one.setPath("/api/private/v1/goods/rights");
+        rightsChildren.add(one);
+        rights.setChildren(rightsChildren);
 
         // 商品管理
         AuthVO goods = new AuthVO();
