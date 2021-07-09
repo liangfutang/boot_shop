@@ -76,7 +76,7 @@ public class HomeController {
         AuthVO one = new AuthVO();
         one.setId(130);
         one.setAuthName("权限列表");
-        one.setPath("/api/private/v1/goods/rights");
+        one.setPath("/rights");
         rightsChildren.add(one);
         rights.setChildren(rightsChildren);
 
