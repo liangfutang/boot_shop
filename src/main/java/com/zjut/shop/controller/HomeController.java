@@ -56,24 +56,14 @@ public class HomeController {
         // 用户列表
         AuthVO userManger = new AuthVO();
         userManger.setId(110);
-        userManger.setAuthName("用户列表");
+        userManger.setAuthName("用户管理");
         // 用户列表的二级导航
         List<AuthVO> userChildren = new ArrayList<>();
         AuthVO oneUser = new AuthVO();
         oneUser.setId(111);
-        oneUser.setAuthName("B端用户");
-        oneUser.setPath("/api/private/v1/users/b");
+        oneUser.setAuthName("用户列表");
+        oneUser.setPath("/users");
         userChildren.add(oneUser);
-        AuthVO towUser = new AuthVO();
-        towUser.setId(112);
-        towUser.setAuthName("C端用户");
-        towUser.setPath("/api/private/v1/users/c");
-        AuthVO threeUser = new AuthVO();
-        userChildren.add(towUser);
-        threeUser.setId(113);
-        threeUser.setAuthName("VIP用户");
-        threeUser.setPath("/api/private/v1/users/v");
-        userChildren.add(threeUser);
         userManger.setChildren(userChildren);
 
 
@@ -81,7 +71,7 @@ public class HomeController {
         AuthVO rights = new AuthVO();
         rights.setId(130);
         rights.setAuthName("权限管理");
-        rights.setPath("/api/private/v1/rights");
+        rights.setPath("/rights");
 
         // 商品管理
         AuthVO goods = new AuthVO();
@@ -92,26 +82,13 @@ public class HomeController {
         AuthVO apple = new AuthVO();
         apple.setId(151);
         apple.setAuthName("苹果");
-        apple.setPath("/api/private/v1/goods/ap");
+        apple.setPath("/goods");
         goodsChildren.add(apple);
         AuthVO oringe = new AuthVO();
         oringe.setId(152);
         oringe.setAuthName("橘子");
         oringe.setPath("/api/private/v1/goods/or");
         goodsChildren.add(oringe);
-//        // 三级菜单导航
-//        List<AuthVO> suOrgChildren = new ArrayList<>();
-//        AuthVO anhuiOringe = new AuthVO();
-//        anhuiOringe.setId(1521);
-//        anhuiOringe.setAuthName("安徽橘子");
-//        anhuiOringe.setPath("/api/private/v1/goods/or/1");
-//        suOrgChildren.add(anhuiOringe);
-//        AuthVO jiangsuOringe = new AuthVO();
-//        jiangsuOringe.setId(1522);
-//        jiangsuOringe.setAuthName("江苏橘子");
-//        jiangsuOringe.setPath("/api/private/v1/goods/or/2");
-//        suOrgChildren.add(jiangsuOringe);
-//        oringe.setChildren(suOrgChildren);
 
         AuthVO balana = new AuthVO();
         balana.setId(153);
