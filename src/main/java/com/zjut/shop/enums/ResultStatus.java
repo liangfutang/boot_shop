@@ -3,7 +3,9 @@ package com.zjut.shop.enums;
 public enum ResultStatus {
 
     MENU_EXEC(4001, "获取菜单异常"),
-    SELECT_EXEC(5000, "查询异常");
+    SELECT_EXEC(5000, "查询异常"),
+    PAGE_NUM_EXEC(6000, "页码参数不规范"),
+    PAGE_SIZE_EXEC(6000, "页码参数不规范");
 
 
 

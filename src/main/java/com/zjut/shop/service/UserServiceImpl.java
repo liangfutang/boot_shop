@@ -1,17 +1,21 @@
 package com.zjut.shop.service;
 
+import com.zjut.shop.query.UserParam;
+import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    private static List<UserVO> userVOList = Collections.synchronizedList(new ArrayList<>());
+    private static List<UserVO> userVOList = new CopyOnWriteArrayList<>();
     static {
         String[] userNames = {"安雅萍","白百合","白冰","陈钰琪","陈冲","陈红","陈妍希","陈意涵","陈乔恩","陈紫涵","楚月","程愫","蔡依林","陈数"
                 ,"蔡少芬","陈美琪","陈晓旭","陈瑶","程瑷瑗"};
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
             user.setMgState(random.nextInt(1) != 0);
             if (i==0) {
                 user.setRoleName("超级管理员");
+                userVOList.add(user);
                 continue;
             }
             user.setRoleName(roleName[i % roleName.length]);
@@ -37,8 +42,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserVO> selectList() {
-        return userVOList;
+    public PageResult<List<UserVO>> selectList(UserParam userParam) {
+        // 当前用户数
+        int currentUserTotal = userVOList.size();
+        // 查询的起点
+        int start = userParam.getPageNum() * userParam.getPageSize();
+        int end = start + userParam.getPageSize();
+
+        // 对起点和终点润色
+        // 1. 如果起点超出范围则返回为空
+        if (start > currentUserTotal-1) {
+            log.info("当前查询页超标啦");
+            return new PageResult<>(currentUserTotal, new ArrayList<>());
+        }
+
+        // 2. 如果终点超出了范围，则按最后一个算
+        if (end > currentUserTotal-1) {
+            log.info("终点超出了");
+            end = currentUserTotal;
+        }
+        System.out.println(userVOList.get(11));
+
+        return new PageResult<>(currentUserTotal, userVOList.subList(start, end));
+    }
+
+    public static void main(String[] args) {
+        List<UserVO> userVOS = userVOList.subList(0, 6);
+        System.out.println(userVOS);
     }
 
 }
