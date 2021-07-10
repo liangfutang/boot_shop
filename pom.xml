@@ -17,6 +17,7 @@
         <project-common.version>1.0-SNAPSHOT</project-common.version>
         <slf4j-log4j12.version>1.6.1</slf4j-log4j12.version>
         <slf4j-api.version>1.6.1</slf4j-api.version>
+        <hutool.version>5.5.2</hutool.version>
     </properties>
 
     <dependencies>
@@ -54,6 +55,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-api.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
     </dependencies>
 
