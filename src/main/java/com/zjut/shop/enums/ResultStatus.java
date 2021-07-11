@@ -13,7 +13,8 @@ public enum ResultStatus {
     ADD_USER_EXEC(6200, "添加用户异常"),
     DELETE_USER_EXEC(6201, "删除用户异常"),
     UPDATE_USER_EXEC(6202, "修改用户异常"),
-    NO_USER_EXEC(6203, "用户不存在");
+    SELECT_USER_EXEC(6203, "查找用户异常"),
+    NO_USER_EXEC(6204, "用户不存在");
 
 
 

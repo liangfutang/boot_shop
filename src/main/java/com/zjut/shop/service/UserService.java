@@ -31,5 +31,24 @@ public interface UserService {
      */
     UserVO addUser(UserAddParam userAddParam);
 
+    /**
+     * 根据用户id删除用户信息
+     * @param id
+     * @return
+     */
     UserVO deleteUserById(Integer id);
+
+    /**
+     * 根据用户id查找用户信息
+     * @param id
+     * @return
+     */
+    UserVO selectUserById(Integer id);
+
+    /**
+     * 根据用户id查找用户信息
+     * @param user
+     * @return
+     */
+    UserVO editUserInfoById(UserVO user);
 }

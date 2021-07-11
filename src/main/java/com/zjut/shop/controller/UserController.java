@@ -121,4 +121,44 @@ public class UserController {
             return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.DELETE_USER_EXEC.getMsg(), ResultStatus.DELETE_USER_EXEC.getCode()), HttpStatus.OK);
         }
     }
+
+    /**
+     * 根据用户id修改用户信息
+     * @return
+     */
+    @PutMapping("/api/private/v1/users/{id}")
+    public ResponseEntity<?> editUserInfoById(@PathVariable Integer id, @RequestBody UserVO userVO) {
+        log.info("根据id修改用户信息,id:{}", id);
+
+        try {
+            userVO.setId(id);
+            return new ResponseEntity<>(BaseResult.handlerSuccess("修改用户成功", userService.editUserInfoById(userVO)), HttpStatus.OK);
+        } catch (ShopRuntimeException sre){
+            log.error("修改用户内部异常");
+            return new ResponseEntity<>(BaseResult.handlerFailure(sre.getMessage(), sre.getCode()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("修改用户异常:", e);
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.UPDATE_USER_EXEC.getMsg(), ResultStatus.UPDATE_USER_EXEC.getCode()), HttpStatus.OK);
+        }
+    }
+
+    /**
+     * 根据用户id查找该用户信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/api/private/v1/users/{id}")
+    public ResponseEntity<?> selectUserById(@PathVariable Integer id) {
+        log.info("根据id查找用户信息,id:{}", id);
+
+        try {
+            return new ResponseEntity<>(BaseResult.handlerSuccess("查找用户成功", userService.selectUserById(id)), HttpStatus.OK);
+        } catch (ShopRuntimeException sre){
+            log.error("查找用户内部异常");
+            return new ResponseEntity<>(BaseResult.handlerFailure(sre.getMessage(), sre.getCode()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("查找用户异常:", e);
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.SELECT_USER_EXEC.getMsg(), ResultStatus.SELECT_USER_EXEC.getCode()), HttpStatus.OK);
+        }
+    }
 }

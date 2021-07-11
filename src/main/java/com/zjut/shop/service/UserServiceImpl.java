@@ -144,6 +144,30 @@ public class UserServiceImpl implements UserService {
         return deleteOne;
     }
 
+    @Override
+    public UserVO selectUserById(Integer id) {
+        List<UserVO> users = userVOList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
+        log.info("查到用户列表:{}", users);
+        if (users.size() == 0) {
+            log.error("没查到对应用户");
+            throw new ShopRuntimeException(ResultStatus.NO_USER_EXEC);
+        }
+        if (users.size() > 1) {
+            log.error("查到多个用户，数据异常");
+            throw new ShopRuntimeException(ResultStatus.MORE_USER_FAILURE);
+        }
+        return users.get(0);
+    }
+
+    @Override
+    public UserVO editUserInfoById(UserVO user) {
+        UserVO userVO = this.selectUserById(user.getId());
+        userVO.setUserName(user.getUserName());
+        userVO.setMobile(user.getMobile());
+        userVO.setEmail(user.getEmail());
+        return userVO;
+    }
+
     /**
      * 校验当前的用户数据是否包含当前查询的字符串
      * @param user
