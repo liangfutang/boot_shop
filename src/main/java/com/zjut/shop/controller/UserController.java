@@ -2,6 +2,7 @@ package com.zjut.shop.controller;
 
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
+import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.UserService;
@@ -78,6 +79,18 @@ public class UserController {
         } catch (Exception e) {
             log.error("更新用户状态异常");
             return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.UPDATE_USER_STATUS_FAILURE.getMsg(), ResultStatus.UPDATE_USER_STATUS_FAILURE.getCode()), HttpStatus.OK);
+        }
+    }
+
+
+    @PostMapping("/api/private/v1/users")
+    public ResponseEntity<?> addUser(@RequestBody UserAddParam userAddParam) {
+        log.info("新添加一个用户:{}", userAddParam);
+        try {
+            return new ResponseEntity<>(BaseResult.handlerSuccess("更新用户状态成功", userService.addUser(userAddParam)), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("添加用户异常:", e);
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.ADD_USER_EXEC.getMsg(), ResultStatus.ADD_USER_EXEC.getCode()), HttpStatus.OK);
         }
     }
 }

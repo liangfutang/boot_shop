@@ -1,9 +1,11 @@
 package com.zjut.shop.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
+import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
@@ -11,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
+
+    private static ThreadLocal<SimpleDateFormat> dataFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     private static List<UserVO> userVOList = new CopyOnWriteArrayList<>();
     static {
@@ -37,6 +43,8 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userNameCN[i] + emailAft[i % emailAft.length]);
             user.setMobile(mobile[i]);
             user.setMgState(random.nextInt(2) != 0);
+            String createTime = dataFormat.get().format(new Date(System.currentTimeMillis() - random.nextInt(900000000)));
+            user.setCreateTime(createTime);
             if (i==0) {
                 user.setRoleName("超级管理员");
                 userVOList.add(user);
@@ -100,6 +108,21 @@ public class UserServiceImpl implements UserService {
         return userVO;
     }
 
+    @Override
+    public UserVO addUser(UserAddParam userAddParam) {
+        int id = 0;
+        if (userVOList.size() > 0) {
+            id = userVOList.size();
+        }
+        UserVO userVO = new UserVO();
+        userVO.setId(id);
+        userVO.setMgState(true);
+        userVO.setCreateTime(dataFormat.get().format(new Date()));
+        BeanUtil.copyProperties(userAddParam, userVO);
+
+        userVOList.add(userVO);
+        return userVO;
+    }
 
     /**
      * 校验当前的用户数据是否包含当前查询的字符串

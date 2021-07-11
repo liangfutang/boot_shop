@@ -1,5 +1,6 @@
 package com.zjut.shop.service;
 
+import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
@@ -22,4 +23,7 @@ public interface UserService {
      * @return
      */
     UserVO updateStatus(Integer id, Boolean mgState);
+
+
+    UserVO addUser(UserAddParam userAddParam);
 }
