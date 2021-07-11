@@ -9,6 +9,7 @@ import com.zjut.shop.service.UserService;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,11 +87,38 @@ public class UserController {
     @PostMapping("/api/private/v1/users")
     public ResponseEntity<?> addUser(@RequestBody UserAddParam userAddParam) {
         log.info("新添加一个用户:{}", userAddParam);
+        if (StringUtils.isBlank(userAddParam.getUserName())
+                || StringUtils.isBlank(userAddParam.getEmail())
+                || StringUtils.isBlank(userAddParam.getMobile())
+                || StringUtils.isBlank(userAddParam.getPassword())) {
+            log.error("缺少必要参数");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.PARAM_EXEC.getMsg(), ResultStatus.PARAM_EXEC.getCode()), HttpStatus.OK);
+        }
+
         try {
-            return new ResponseEntity<>(BaseResult.handlerSuccess("更新用户状态成功", userService.addUser(userAddParam)), HttpStatus.OK);
+            return new ResponseEntity<>(BaseResult.handlerSuccess("新增用户成功", userService.addUser(userAddParam)), HttpStatus.OK);
         } catch (Exception e) {
             log.error("添加用户异常:", e);
             return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.ADD_USER_EXEC.getMsg(), ResultStatus.ADD_USER_EXEC.getCode()), HttpStatus.OK);
+        }
+    }
+
+    @DeleteMapping("/api/private/v1/users/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable Integer id) {
+        log.info("即将删除的用户的id:{}", id);
+        if (id < 0) {
+            log.error("缺少必要参数");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.PARAM_EXEC.getMsg(), ResultStatus.PARAM_EXEC.getCode()), HttpStatus.OK);
+        }
+
+        try {
+            return new ResponseEntity<>(BaseResult.handlerSuccess("删除用户成功", userService.deleteUserById(id)), HttpStatus.OK);
+        } catch (ShopRuntimeException sre){
+            log.error("删除用户内部异常");
+            return new ResponseEntity<>(BaseResult.handlerFailure(sre.getMessage(), sre.getCode()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("删除用户异常:", e);
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.DELETE_USER_EXEC.getMsg(), ResultStatus.DELETE_USER_EXEC.getCode()), HttpStatus.OK);
         }
     }
 }

@@ -14,10 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -27,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private static ThreadLocal<SimpleDateFormat> dataFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-    private static List<UserVO> userVOList = new CopyOnWriteArrayList<>();
+    private static final List<UserVO> userVOList = new CopyOnWriteArrayList<>();
     static {
         String[] userNames = {"安雅萍","白百合","白冰","陈钰琪","陈冲","陈红","陈妍希","陈意涵","陈乔恩","陈紫涵","楚月","程愫","蔡依林","陈数"
                 ,"蔡少芬","陈美琪","陈晓旭","陈瑶","程瑷瑗"};
@@ -112,8 +109,12 @@ public class UserServiceImpl implements UserService {
     public UserVO addUser(UserAddParam userAddParam) {
         int id = 0;
         if (userVOList.size() > 0) {
-            id = userVOList.size();
+            // 查找当前所有id中最大的
+            UserVO targetUser = userVOList.stream().max(Comparator.comparing(UserVO::getId)).get();
+            log.info("新增用户的时候查到当前列表id最大用户:{}", targetUser);
+            id = targetUser.getId() + 1;
         }
+
         UserVO userVO = new UserVO();
         userVO.setId(id);
         userVO.setMgState(true);
@@ -122,6 +123,25 @@ public class UserServiceImpl implements UserService {
 
         userVOList.add(userVO);
         return userVO;
+    }
+
+    @Override
+    public UserVO deleteUserById(Integer id) {
+
+        UserVO deleteOne = null;
+        for (UserVO one : userVOList) {
+            if (id.equals(one.getId())) {
+                deleteOne = one;
+                break;
+            }
+        }
+        if (deleteOne == null) {
+            log.error("没找到对应的用户");
+            throw new ShopRuntimeException(ResultStatus.NO_USER_EXEC);
+        }
+        log.info("找到要删除的用户:{}", deleteOne);
+        userVOList.remove(deleteOne);
+        return deleteOne;
     }
 
     /**
@@ -148,6 +168,16 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(roleName) && roleName.contains(query)) return true;
 
         return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("删除前:" + userVOList);
+        for (UserVO one : userVOList) {
+            if (new Integer(5).equals(one.getId())) {
+                userVOList.remove(one);
+            }
+        }
+        System.out.println("删除后:" + userVOList);
     }
 
 }

@@ -24,6 +24,12 @@ public interface UserService {
      */
     UserVO updateStatus(Integer id, Boolean mgState);
 
-
+    /**
+     * 新增用户
+     * @param userAddParam
+     * @return
+     */
     UserVO addUser(UserAddParam userAddParam);
+
+    UserVO deleteUserById(Integer id);
 }
