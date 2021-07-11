@@ -24,3 +24,6 @@ doc
 report
 checkstyle.html
 pmd.html
+.mvn
+mvnw
+mvnw.cmd
