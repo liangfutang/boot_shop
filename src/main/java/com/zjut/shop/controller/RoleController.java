@@ -34,7 +34,7 @@ public class RoleController {
     @PostMapping("/api/private/v1/roles")
     public ResponseEntity<?> addRole(@RequestBody RoleParam roleParam) {
         log.info("新增角色参数:{}", roleParam);
-        return new ResponseEntity<>(BaseResult.handlerSuccess("新增角色列表成功", roleService.addRoleList(roleParam)), HttpStatus.OK);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("新增角色成功", roleService.addRoleList(roleParam)), HttpStatus.OK);
     }
 
     /**
@@ -44,9 +44,8 @@ public class RoleController {
      */
     @GetMapping("/api/private/v1/roles/{id}")
     public ResponseEntity<?> selectRoleById(@PathVariable Integer id) {
-        log.info("根据if查找角色,id:{}",id);
-
-        return null;
+        log.info("根据id查找角色,id:{}",id);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("查询角色成功", roleService.selectRoleById(id)), HttpStatus.OK);
     }
 
     /**
@@ -56,23 +55,21 @@ public class RoleController {
      * @return
      */
     @PutMapping("/api/private/v1/roles/{id}")
-    public ResponseEntity<?> updateRoleById(@PathVariable Integer id, @RequestBody RoleVO role) {
+    public ResponseEntity<?> updateRoleById(@PathVariable Integer id, @RequestBody RoleParam role) {
         log.info("根据id:{},修改角色参数:{}", id, role);
-
-        return null;
+        return new ResponseEntity<>(BaseResult.handlerSuccess("编辑角色成功", roleService.updateRoleById(id, role)), HttpStatus.OK);
     }
 
 
     /**
-     *  删除角色
+     *  删除角色及其子角色
      * @param id
      * @return
      */
     @DeleteMapping("/api/private/v1/roles/{id}")
     public ResponseEntity<?> deleteRoleById(@PathVariable Integer id) {
         log.info("根据id删除角色:{}", id);
-
-        return null;
+        return new ResponseEntity<>(BaseResult.handlerSuccess("删除角色成功", roleService.deleteRoleById(id)), HttpStatus.OK);
     }
 
 }

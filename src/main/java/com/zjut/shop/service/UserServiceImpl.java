@@ -162,9 +162,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVO editUserInfoById(UserVO user) {
         UserVO userVO = this.selectUserById(user.getId());
-        userVO.setUserName(user.getUserName());
-        userVO.setMobile(user.getMobile());
-        userVO.setEmail(user.getEmail());
+        String userName = user.getUserName();
+        if (StringUtils.isNotBlank(userName)) {
+            userVO.setUserName(userName);
+        }
+        String mobile = user.getMobile();
+        if (StringUtils.isNotBlank(mobile)) {
+            userVO.setMobile(mobile);
+        }
+        String email = user.getEmail();
+        if (StringUtils.isNotBlank(email)) {
+            userVO.setEmail(email);
+        }
         return userVO;
     }
 

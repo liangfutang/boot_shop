@@ -16,7 +16,9 @@ public enum ResultStatus {
     UPDATE_USER_EXEC(6202, "修改用户异常"),
     SELECT_USER_EXEC(6203, "查找用户异常"),
     NO_USER_EXEC(6204, "用户不存在"),
-    OPERATE_TYPE_EXEC(6205, "操作类型异常");
+    OPERATE_TYPE_EXEC(6205, "操作类型异常"),
+    MORE_ROLE_FAILURE(6206, "存在多个相同id的角色，数据异常"),
+    NO_ROLE_FAILURE(6207, "没查到相应的角色");
 
 
 

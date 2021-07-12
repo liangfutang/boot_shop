@@ -1,14 +1,19 @@
 package com.zjut.shop.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.zjut.shop.enums.ResultStatus;
+import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.vo.RoleVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -68,5 +73,40 @@ public class RoleServiceImpl implements RoleService {
         }
         roleList.add(addOne);
         return addOne;
+    }
+
+    @Override
+    public RoleVO selectRoleById(Integer id) {
+        List<RoleVO> roles = roleList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(roles)) {
+            log.info("当前没查到相关用户");
+            throw new ShopRuntimeException(ResultStatus.NO_ROLE_FAILURE);
+        }
+        if (roles.size() > 1) {
+            log.info("当前存在多个id相同的用户，数据异常");
+            throw new ShopRuntimeException(ResultStatus.NO_ROLE_FAILURE);
+        }
+        log.info("过滤出来的角色:{}", roles);
+        return roles.get(0);
+    }
+
+    @Override
+    public RoleVO updateRoleById(Integer id, RoleParam role) {
+        RoleVO roleVO = this.selectRoleById(id);
+        String roleName = role.getRoleName();
+        if (StringUtils.isNotBlank(roleName)) {
+            roleVO.setRoleName(roleName);
+        }
+
+        String roleDesc = role.getRoleDesc();
+        if (StringUtils.isNotBlank(roleDesc)) {
+            roleVO.setRoleDesc(roleDesc);
+        }
+        return roleVO;
+    }
+
+    @Override
+    public boolean deleteRoleById(Integer id) {
+        return roleList.removeIf(one -> id.equals(one.getId()));
     }
 }

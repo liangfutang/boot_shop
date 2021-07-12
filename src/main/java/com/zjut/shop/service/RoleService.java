@@ -13,5 +13,32 @@ public interface RoleService {
      */
     List<RoleVO> selectRoleList();
 
+    /**
+     * 新增一个用户
+     * @param roleParam
+     * @return
+     */
     RoleVO addRoleList(RoleParam roleParam);
+
+    /**
+     * 根据id查找对应的角色
+     * @param id
+     * @return
+     */
+    RoleVO selectRoleById(Integer id);
+
+    /**
+     * 根据id编辑用户信息
+     * @param id
+     * @param role
+     * @return
+     */
+    RoleVO updateRoleById(Integer id, RoleParam role);
+
+    /**
+     * 根据id删除角色及其子角色
+     * @param id
+     * @return
+     */
+    boolean deleteRoleById(Integer id);
 }
