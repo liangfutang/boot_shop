@@ -15,12 +15,12 @@ public class MenuVO {
     private String menuName;
 
     /**
-     * 权限等级
+     * 关联的权限id
      */
-    private String level;
+    private Integer authId;
 
     /**
-     * 父权限id
+     * 父菜单id
      */
     private Integer pid;
 
