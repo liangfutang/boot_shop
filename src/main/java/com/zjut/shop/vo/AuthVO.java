@@ -20,6 +20,5 @@ public class AuthVO {
     /**
      * 父权限id
      */
-    private String pid;
-    private String path;
+    private Integer pid;
 }
