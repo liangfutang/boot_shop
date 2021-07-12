@@ -14,15 +14,43 @@ public class RoleServiceImpl implements RoleService {
     /**
      * 存储所有的权限
      */
-    private static final List<RoleVO> rightList = new CopyOnWriteArrayList<>();
+    private static final List<RoleVO> roleList = new CopyOnWriteArrayList<>();
 
     static {
+        RoleVO one = new RoleVO();
+        one.setId(1);
+        one.setRoleDesc("管理所有部门");
+        one.setRoleName("总裁");
+        roleList.add(one);
 
+        RoleVO two = new RoleVO();
+        two.setId(2);
+        two.setRoleDesc("总管公司所有事物执行");
+        two.setRoleName("总经理");
+        roleList.add(two);
+
+        RoleVO three = new RoleVO();
+        three.setId(3);
+        three.setRoleDesc("部门经理");
+        three.setRoleName("总管部门内的所有事物");
+        roleList.add(three);
+
+        RoleVO four = new RoleVO();
+        four.setId(4);
+        four.setRoleDesc("总管小组内部的事务");
+        four.setRoleName("高级经理");
+        roleList.add(four);
+
+        RoleVO five = new RoleVO();
+        five.setId(5);
+        five.setRoleDesc("负责相关产品的研发");
+        five.setRoleName("研发");
+        roleList.add(five);
     }
 
     @Override
-    public List<RoleVO> selectRoleList(String type) {
+    public List<RoleVO> selectRoleList() {
 
-        return rightList;
+        return roleList;
     }
 }
