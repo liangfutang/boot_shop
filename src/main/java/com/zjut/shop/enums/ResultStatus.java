@@ -2,6 +2,7 @@ package com.zjut.shop.enums;
 
 public enum ResultStatus {
 
+    INTERNAL_EXEC(1000, "内部异常"),
     PARAM_EXEC(4000, "参数异常"),
     MENU_EXEC(4001, "获取菜单异常"),
     SELECT_EXEC(5000, "查询异常"),
@@ -14,7 +15,8 @@ public enum ResultStatus {
     DELETE_USER_EXEC(6201, "删除用户异常"),
     UPDATE_USER_EXEC(6202, "修改用户异常"),
     SELECT_USER_EXEC(6203, "查找用户异常"),
-    NO_USER_EXEC(6204, "用户不存在");
+    NO_USER_EXEC(6204, "用户不存在"),
+    OPERATE_TYPE_EXEC(6205, "操作类型异常");
 
 
 

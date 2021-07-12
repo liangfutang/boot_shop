@@ -2,6 +2,8 @@ package com.zjut.shop.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 权限
  */
@@ -21,4 +23,9 @@ public class AuthVO {
      * 父权限id
      */
     private Integer pid;
+
+    /**
+     * 子权限
+     */
+    private List<AuthVO> children;
 }
