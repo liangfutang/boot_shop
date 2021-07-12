@@ -1,9 +1,12 @@
 package com.zjut.shop.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.vo.RoleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -50,7 +53,20 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleVO> selectRoleList() {
-
         return roleList;
+    }
+
+    @Override
+    public RoleVO addRoleList(RoleParam roleParam) {
+        RoleVO addOne = new RoleVO();
+        BeanUtil.copyProperties(roleParam, addOne);
+        if (roleList.size() == 0) {
+            addOne.setId(0);
+        } else {
+            RoleVO maxIdRole = roleList.stream().max(Comparator.comparing(RoleVO::getId)).get();
+            addOne.setId(maxIdRole.getId() + 1);
+        }
+        roleList.add(addOne);
+        return addOne;
     }
 }

@@ -1,5 +1,6 @@
 package com.zjut.shop.service;
 
+import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.vo.RoleVO;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface RoleService {
      * @return
      */
     List<RoleVO> selectRoleList();
+
+    RoleVO addRoleList(RoleParam roleParam);
 }

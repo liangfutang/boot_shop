@@ -1,5 +1,6 @@
 package com.zjut.shop.controller;
 
+import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.RoleService;
 import com.zjut.shop.vo.RoleVO;
@@ -22,19 +23,18 @@ public class RoleController {
      */
     @GetMapping("/api/private/v1/roles")
     public ResponseEntity<?> selectRoleList() {
-        return new ResponseEntity<>(BaseResult.handlerSuccess("查询权限列表成功", roleService.selectRoleList()), HttpStatus.OK);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("查询角色列表成功", roleService.selectRoleList()), HttpStatus.OK);
     }
 
     /**
      *  添加角色
-     * @param role
+     * @param roleParam
      * @return
      */
     @PostMapping("/api/private/v1/roles")
-    public ResponseEntity<?> addRole(@RequestBody RoleVO role) {
-        log.info("新增角色参数:{}", role);
-
-        return null;
+    public ResponseEntity<?> addRole(@RequestBody RoleParam roleParam) {
+        log.info("新增角色参数:{}", roleParam);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("新增角色列表成功", roleService.addRoleList(roleParam)), HttpStatus.OK);
     }
 
     /**
