@@ -79,29 +79,18 @@ public class HomeController {
         rightsChildren.add(one);
         rights.setChildren(rightsChildren);
 
-        // 商品管理
-        MenuVO goods = new MenuVO();
-        goods.setId(150);
-        goods.setMenuName("商品管理");
+        // 角色管理
+        MenuVO roles = new MenuVO();
+        roles.setId(150);
+        roles.setMenuName("角色管理");
         // 商品列表的二级导航
-        List<MenuVO> goodsChildren = new ArrayList<>();
-        MenuVO apple = new MenuVO();
-        apple.setId(151);
-        apple.setMenuName("苹果");
-        apple.setPath("/goods");
-        goodsChildren.add(apple);
-        MenuVO oringe = new MenuVO();
-        oringe.setId(152);
-        oringe.setMenuName("橘子");
-        oringe.setPath("/api/private/v1/goods/or");
-        goodsChildren.add(oringe);
-
-        MenuVO balana = new MenuVO();
-        balana.setId(153);
-        balana.setMenuName("香蕉");
-        balana.setPath("/api/private/v1/goods/bl");
-        goodsChildren.add(balana);
-        goods.setChildren(goodsChildren);
+        List<MenuVO> rolesChildren = new ArrayList<>();
+        MenuVO oneRole = new MenuVO();
+        oneRole.setId(151);
+        oneRole.setMenuName("角色列表");
+        oneRole.setPath("/roles");
+        rolesChildren.add(oneRole);
+        roles.setChildren(rolesChildren);
 
         // 订单管理
         MenuVO orders = new MenuVO();
@@ -115,7 +104,7 @@ public class HomeController {
 
         menus.add(userManger);
         menus.add(rights);
-        menus.add(goods);
+        menus.add(roles);
         menus.add(orders);
         menus.add(reports);
 
