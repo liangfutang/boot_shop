@@ -1,9 +1,9 @@
 package com.zjut.shop.controller;
 
+import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.RoleService;
-import com.zjut.shop.vo.RoleVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,17 @@ public class RoleController {
      * @return
      */
     @GetMapping("/api/private/v1/roles")
-    public ResponseEntity<?> selectRoleList() {
-        return new ResponseEntity<>(BaseResult.handlerSuccess("查询角色列表成功", roleService.selectRoleList()), HttpStatus.OK);
+    public ResponseEntity<?> selectRoleList(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize) {
+        log.info(String.format("获取用户列表,当前页:%d,每页:%d", pageNum, pageSize));
+        if (pageNum < 1) {
+            log.error("起始页不能小于1");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.PAGE_NUM_EXEC.getMsg(), ResultStatus.PAGE_NUM_EXEC.getCode()), HttpStatus.OK);
+        }
+        if (pageSize<1 || pageSize>50) {
+            log.error("每页大小不规范");
+            return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.PAGE_SIZE_EXEC.getMsg(), ResultStatus.PAGE_SIZE_EXEC.getCode()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(BaseResult.handlerSuccess("查询角色列表成功", roleService.selectRoleList(new RoleParam(pageNum-1, pageSize))), HttpStatus.OK);
     }
 
     /**

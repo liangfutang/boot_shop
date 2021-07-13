@@ -5,11 +5,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.RoleParam;
+import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
+import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,8 +42,8 @@ public class RoleServiceImpl implements RoleService {
 
         RoleVO three = new RoleVO();
         three.setId(3);
-        three.setRoleDesc("部门经理");
-        three.setRoleName("总管部门内的所有事物");
+        three.setRoleDesc("总管部门内的所有事物");
+        three.setRoleName("部门经理");
         roleList.add(three);
 
         RoleVO four = new RoleVO();
@@ -54,11 +57,36 @@ public class RoleServiceImpl implements RoleService {
         five.setRoleDesc("负责相关产品的研发");
         five.setRoleName("研发");
         roleList.add(five);
+
+        RoleVO six = new RoleVO();
+        six.setId(6);
+        six.setRoleDesc("负责相关产品的设计");
+        six.setRoleName("产品");
+        roleList.add(six);
     }
 
     @Override
-    public List<RoleVO> selectRoleList() {
-        return roleList;
+    public PageResult<List<RoleVO>> selectRoleList(RoleParam roleParam) {
+        // 当前用户数
+        int currentRoleTotal = roleList.size();
+        // 查询的起点
+        int start = roleParam.getPageNum() * roleParam.getPageSize();
+        int end = start + roleParam.getPageSize();
+
+        // 1. 如果起点超出范围则返回为空
+        if (start > currentRoleTotal-1) {
+            log.info("当前查询页超标啦");
+            return new PageResult<>(currentRoleTotal, new ArrayList<>());
+        }
+
+        // 2. 如果终点超出了范围，则按最后一个算
+        if (end > currentRoleTotal-1) {
+            log.info("终点超出了");
+            end = currentRoleTotal;
+        }
+
+
+        return new PageResult<>(currentRoleTotal, roleList.subList(start, end));
     }
 
     @Override
