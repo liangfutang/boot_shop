@@ -205,11 +205,7 @@ public class UserServiceImpl implements UserService {
 
     public static void main(String[] args) {
         System.out.println("删除前:" + userVOList);
-        for (UserVO one : userVOList) {
-            if (new Integer(5).equals(one.getId())) {
-                userVOList.remove(one);
-            }
-        }
+        userVOList.removeIf(one -> new Integer(5).equals(one.getId()));
         System.out.println("删除后:" + userVOList);
     }
 
