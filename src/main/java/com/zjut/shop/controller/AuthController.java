@@ -1,5 +1,6 @@
 package com.zjut.shop.controller;
 
+import com.zjut.shop.enums.OperateEnum;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.AuthService;
@@ -24,7 +25,7 @@ public class AuthController {
         log.info("查询权限列表的类型type:{}", type);
 
         // 传入的操作类型不满足要求
-        if (!AuthServiceImpl.getOperateType().contains(type)) {
+        if (!OperateEnum.contains(type)) {
             log.error("操作类型异常");
             return new ResponseEntity<>(BaseResult.handlerFailure(ResultStatus.OPERATE_TYPE_EXEC.getMsg(), ResultStatus.OPERATE_TYPE_EXEC.getCode()), HttpStatus.OK);
         }

@@ -2,6 +2,7 @@ package com.zjut.shop.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.zjut.shop.enums.OperateEnum;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.RoleParam;
@@ -36,7 +37,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        List<AuthVO> authTree = authService.selectRightList("tree");
+        List<AuthVO> authTree = authService.selectRightList(OperateEnum.AUTH_SELECT_TYPE_TREE.getCode());
         // 如果当前不存在权限，则跳出设置
         if (CollectionUtil.isEmpty(authTree)) return;
 

@@ -18,24 +18,12 @@ import java.util.stream.Collectors;
 public class AuthServiceImpl implements AuthService {
 
     /**
-     * 操作类型
-     */
-    @Getter
-    private static List<String> operateType = new ArrayList<>();
-
-    /**
      * 存储所有的权限
      */
     @Getter
     private static final List<AuthVO> rightList = new CopyOnWriteArrayList<>();
 
     static {
-        /**
-         * 操作类型数据
-         */
-        operateType.add("list");
-        operateType.add("tree");
-
         /**
          * 制作权限数据
          */
