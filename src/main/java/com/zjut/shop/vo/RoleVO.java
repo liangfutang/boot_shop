@@ -26,4 +26,9 @@ public class RoleVO {
      * 子角色
      */
     private List<RoleVO> children;
+
+    /**
+     * 该角色下面所有的权限数据
+     */
+    private List<AuthVO> authList;
 }

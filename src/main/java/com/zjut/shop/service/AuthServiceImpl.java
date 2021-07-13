@@ -26,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 存储所有的权限
      */
+    @Getter
     private static final List<AuthVO> rightList = new CopyOnWriteArrayList<>();
 
     static {
@@ -62,13 +63,23 @@ public class AuthServiceImpl implements AuthService {
         oneThree.setAuthName("删除产品部门文件权限");
         oneThree.setLevel(AuthLevelEnum.TWO.getCode());
         oneThree.setPid(one.getId());
-        rightList.add(oneTwo);
+        rightList.add(oneThree);
         // 制作child
         List<AuthVO> oneChild = new ArrayList<>();
         oneChild.add(oneOne);
         oneChild.add(oneTwo);
         oneChild.add(oneThree);
         one.setChildren(oneChild);
+        // 制作三级子权限
+        AuthVO oneThreeOne = new AuthVO();
+        oneThreeOne.setId(14);
+        oneThreeOne.setAuthName("删除产品部门接口文档文件权限");
+        oneThreeOne.setLevel(AuthLevelEnum.TWO.getCode());
+        oneThreeOne.setPid(one.getId());
+        rightList.add(oneThree);
+        List<AuthVO> oneThreeChild = new ArrayList<>();
+        oneThreeChild.add(oneThreeOne);
+        oneThree.setChildren(oneThreeChild);
 
 
         AuthVO two = new AuthVO();

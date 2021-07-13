@@ -5,11 +5,16 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.RoleParam;
+import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
 import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +25,49 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl implements RoleService, InitializingBean {
+
+    @Autowired
+    private AuthService authService;
+
+    /**
+     * 向角色中注入权限
+     * @throws Exception
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        List<AuthVO> authTree = authService.selectRightList("tree");
+        // 如果当前不存在权限，则跳出设置
+        if (CollectionUtil.isEmpty(authTree)) return;
+
+        for (RoleVO one : roleList) {
+            switch (one.getId()) {
+                // 大老板，需要所有的权限
+                case 1:
+                    one.setAuthList(authTree);
+                    break;
+                // 二老板，给他第一个和第二个
+                case 2:
+                    one.setAuthList(authTree.size() >= 2 ? authTree.subList(0, 1) : authTree.subList(0, 2));
+                    break;
+                // 三老板，给他第一个和第三个
+                case 3:
+                    List<AuthVO> threeRole = new ArrayList<>();
+                    threeRole.add(authTree.get(0));
+                    if (threeRole.size() >= 3) threeRole.add(authTree.get(2));
+                    one.setAuthList(threeRole);
+                    break;
+                // 四老板，给他第一个
+                case 4:
+                    one.setAuthList(authTree.subList(0, 1));
+                    break;
+                // 五老板，给他最后一个
+                default:
+                    one.setAuthList(authTree.subList(authTree.size()-1, authTree.size()));
+                    break;
+            }
+        }
+    }
 
     /**
      * 存储所有的权限
