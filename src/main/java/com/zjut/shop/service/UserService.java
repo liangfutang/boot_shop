@@ -2,6 +2,7 @@ package com.zjut.shop.service;
 
 import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
+import com.zjut.shop.query.UserRoleParam;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.UserVO;
 
@@ -51,4 +52,12 @@ public interface UserService {
      * @return
      */
     UserVO editUserInfoById(UserVO user);
+
+    /**
+     * 为用户分配角色
+     * @param id
+     * @param userRoleParam
+     * @return
+     */
+    UserVO addUserRoles(Integer id, UserRoleParam userRoleParam);
 }

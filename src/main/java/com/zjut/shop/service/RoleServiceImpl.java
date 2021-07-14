@@ -10,6 +10,7 @@ import com.zjut.shop.query.RoleRightParam;
 import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -72,6 +73,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
     /**
      * 存储所有的权限
      */
+    @Getter
     private static final List<RoleVO> roleList = new CopyOnWriteArrayList<>();
 
     static {

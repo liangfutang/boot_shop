@@ -2,6 +2,8 @@ package com.zjut.shop.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserVO {
 
@@ -16,5 +18,8 @@ public class UserVO {
       */
      private Boolean mgState;
      private String roleName;
+
+
+     private List<RoleVO> roleList;
 
 }

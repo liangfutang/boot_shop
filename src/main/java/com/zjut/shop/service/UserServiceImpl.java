@@ -7,12 +7,16 @@ import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
+import com.zjut.shop.query.UserRoleParam;
+import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
+import com.zjut.shop.vo.RoleVO;
 import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -49,6 +53,29 @@ public class UserServiceImpl implements UserService {
             }
             user.setRoleName(roleName[i % roleName.length]);
             userVOList.add(user);
+        }
+    }
+
+    /**
+     * 为用户分配角色
+     */
+    @PostConstruct
+    public void init() {
+        List<RoleVO> roleList = RoleServiceImpl.getRoleList();
+        if (CollectionUtil.isEmpty(roleList)) return;
+
+        for (UserVO one : userVOList) {
+            // 超级管理员
+            if (one.getId() == 0) {
+                one.setRoleList(roleList);
+                continue;
+            }
+            Random random = new Random();
+            Set<RoleVO> roles = new HashSet<>();
+            for (int i=0 ;i < 3; i++) {
+                roles.add(roleList.get(random.nextInt(roleList.size())));
+            }
+            one.setRoleList(new ArrayList<>(roles));
         }
     }
 
@@ -176,6 +203,25 @@ public class UserServiceImpl implements UserService {
         }
         return userVO;
     }
+
+    @Override
+    public UserVO addUserRoles(Integer id, UserRoleParam userRoleParam) {
+        UserVO userVO = this.selectUserById(id);
+        List<Integer> rid = userRoleParam.getRid();
+        // 过滤掉存在的角色
+        List<RoleVO> roleList = userVO.getRoleList();
+        if (CollectionUtil.isNotEmpty(roleList)) roleList.forEach(one -> rid.remove(one.getId()));
+        // 查出所有的角色
+        List<RoleVO> collect = RoleServiceImpl.getRoleList().stream().filter(one -> rid.contains(one.getId())).collect(Collectors.toList());
+        // 放进用户中
+        if (CollectionUtil.isEmpty(roleList)) {
+            userVO.setRoleList(collect);
+            return userVO;
+        }
+        roleList.addAll(collect);
+        return userVO;
+    }
+
 
     /**
      * 校验当前的用户数据是否包含当前查询的字符串
