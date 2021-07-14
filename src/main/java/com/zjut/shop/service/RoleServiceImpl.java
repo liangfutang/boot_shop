@@ -6,19 +6,20 @@ import com.zjut.shop.enums.OperateEnum;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.RoleParam;
+import com.zjut.shop.query.RoleRightParam;
 import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
-import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -208,6 +209,39 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
         }
 
         return Optional.ofNullable(authList).orElseGet(ArrayList::new);
+    }
+
+    @Override
+    public RoleVO addRoleRights(Integer roleId, RoleRightParam roleRightParam) {
+        List<Integer> rids = roleRightParam.getRids();
+        // 查看当前角色已经有的权限id列表,移除已经存在的权限id
+        RoleVO roleVO = this.selectRoleById(roleId);
+        List<AuthVO> authList = roleVO.getAuthList();
+        this.removeExistRights(authList, rids);
+        // 仅为展示功能，所以不区分权限等级了，全都添加到一级
+        // 查出所有的权限列表
+        List<AuthVO> collect = AuthServiceImpl.getRightList().stream().filter(one -> rids.contains(one.getId())).collect(Collectors.toList());
+
+        if (CollectionUtil.isEmpty(authList)) {
+            roleVO.setAuthList(collect);
+        } else {
+            authList.addAll(collect);
+        }
+        return roleVO;
+    }
+
+    /**
+     * 移除已经存在的权限id
+     * @param authList
+     * @param rightIds
+     */
+    private void removeExistRights(List<AuthVO> authList, List<Integer> rightIds) {
+        if (CollectionUtil.isEmpty(authList)) return;
+
+        authList.forEach(one -> {
+            rightIds.remove(one.getId());
+            this.removeExistRights(one.getChildren(), rightIds);
+        });
     }
 
     /**

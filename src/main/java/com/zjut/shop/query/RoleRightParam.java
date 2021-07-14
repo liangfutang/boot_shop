@@ -7,5 +7,8 @@ import java.util.List;
 @Data
 public class RoleRightParam {
 
-    private List<String> rids;
+    /**
+     * 权限的id列表
+     */
+    private List<Integer> rids;
 }

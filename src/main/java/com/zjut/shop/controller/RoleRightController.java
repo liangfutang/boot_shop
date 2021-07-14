@@ -28,8 +28,8 @@ public class RoleRightController {
      */
     @PostMapping("/api/private/v1/roles/{roleId}/rights")
     public ResponseEntity<?> addRoleRights(@PathVariable Integer roleId, @RequestBody RoleRightParam roleRightParam) {
-
-        return null;
+        log.info("给角色id:{},分配权限:{}", roleId, roleRightParam);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("角色分配权限成功", roleService.addRoleRights(roleId, roleRightParam)), HttpStatus.OK);
     }
 
     /**

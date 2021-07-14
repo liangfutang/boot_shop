@@ -1,6 +1,7 @@
 package com.zjut.shop.service;
 
 import com.zjut.shop.query.RoleParam;
+import com.zjut.shop.query.RoleRightParam;
 import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
@@ -51,4 +52,12 @@ public interface RoleService {
      * @return
      */
     List<AuthVO> removeRoleRight(Integer roleId, Integer rightId);
+
+    /**
+     * 给角色添加对应的权限
+     * @param roleId
+     * @param roleRightParam
+     * @return
+     */
+    RoleVO addRoleRights(Integer roleId, RoleRightParam roleRightParam);
 }
