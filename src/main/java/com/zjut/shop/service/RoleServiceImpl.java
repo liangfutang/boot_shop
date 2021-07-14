@@ -18,9 +18,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -185,4 +183,52 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
     public boolean deleteRoleById(Integer id) {
         return roleList.removeIf(one -> id.equals(one.getId()));
     }
+
+    @Override
+    public List<AuthVO> removeRoleRight(Integer roleId, Integer rightId) {
+        List<AuthVO> authList = null;
+        boolean findRole = false;
+        for (RoleVO one : roleList) {
+            if (!roleId.equals(one.getId())) continue;
+            findRole = true;
+            log.info("根据id找到对应的角色:{}", one);
+
+            authList = new ArrayList<>(one.getAuthList());
+            if (CollectionUtil.isEmpty(authList)) {
+                log.info("当前角色下面不存在对应的权限");
+                throw new ShopRuntimeException(ResultStatus.NO_RIGHT_EXEC);
+            }
+            // 删除关系数据
+            this.removeRight(authList, rightId);
+            one.setAuthList(authList);
+        }
+        if (!findRole) {
+            log.info("没找到对应的权限");
+            throw new ShopRuntimeException(ResultStatus.NO_ROLE_FAILURE);
+        }
+
+        return Optional.ofNullable(authList).orElseGet(ArrayList::new);
+    }
+
+    /**
+     * 删除关联权限数据
+     * @param authList
+     * @param rightId
+     */
+    private void removeRight(List<AuthVO> authList, Integer rightId) {
+        for (AuthVO one: authList) {
+            // 对本级过滤
+            if (rightId.equals(one.getId())) {
+                synchronized (roleList) {
+                    authList.remove(one);
+                }
+                break;
+            }
+            // 过滤子权限
+            if (CollectionUtil.isNotEmpty(one.getChildren())) {
+                this.removeRight(one.getChildren(), rightId);
+            }
+        }
+    }
+
 }

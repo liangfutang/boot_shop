@@ -1,6 +1,7 @@
 package com.zjut.shop.service;
 
 import com.zjut.shop.query.RoleParam;
+import com.zjut.shop.vo.AuthVO;
 import com.zjut.shop.vo.PageResult;
 import com.zjut.shop.vo.RoleVO;
 
@@ -42,4 +43,12 @@ public interface RoleService {
      * @return
      */
     boolean deleteRoleById(Integer id);
+
+    /**
+     * 去除对应角色下对应的权限
+     * @param roleId
+     * @param rightId
+     * @return
+     */
+    List<AuthVO> removeRoleRight(Integer roleId, Integer rightId);
 }
