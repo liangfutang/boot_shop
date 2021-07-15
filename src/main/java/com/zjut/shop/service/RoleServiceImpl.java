@@ -157,11 +157,11 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
     public RoleVO selectRoleById(Integer id) {
         List<RoleVO> roles = roleList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(roles)) {
-            log.info("当前没查到相关用户");
+            log.info("当前没查到相关角色");
             throw new ShopRuntimeException(ResultStatus.NO_ROLE_FAILURE);
         }
         if (roles.size() > 1) {
-            log.info("当前存在多个id相同的用户，数据异常");
+            log.info("当前存在多个id相同的角色，数据异常");
             throw new ShopRuntimeException(ResultStatus.NO_ROLE_FAILURE);
         }
         log.info("过滤出来的角色:{}", roles);

@@ -14,6 +14,7 @@ import com.zjut.shop.vo.RoleVO;
 import com.zjut.shop.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -78,6 +79,9 @@ public class UserServiceImpl implements UserService {
             one.setRoleList(new ArrayList<>(roles));
         }
     }
+
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public PageResult<List<UserVO>> selectList(UserParam userParam) {
@@ -205,20 +209,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO addUserRoles(Integer id, UserRoleParam userRoleParam) {
-        UserVO userVO = this.selectUserById(id);
-        List<Integer> rid = userRoleParam.getRid();
-        // 过滤掉存在的角色
+    public UserVO addUserRole(Integer userId, Integer roleId) {
+        UserVO userVO = this.selectUserById(userId);
+        // 判断要添加的角色是不是已经有了
         List<RoleVO> roleList = userVO.getRoleList();
-        if (CollectionUtil.isNotEmpty(roleList)) roleList.forEach(one -> rid.remove(one.getId()));
-        // 查出所有的角色
-        List<RoleVO> collect = RoleServiceImpl.getRoleList().stream().filter(one -> rid.contains(one.getId())).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(roleList)) roleList.forEach(one -> {
+            if (roleId.equals(one.getId())) {
+                log.error("当前要添加的角色已经存在");
+                throw new ShopRuntimeException(ResultStatus.EXIST_ROLE_FAILURE);
+            }
+        });
+        // 查出当前需要添加的角色
+        RoleVO roleVO = roleService.selectRoleById(roleId);
         // 放进用户中
-        if (CollectionUtil.isEmpty(roleList)) {
-            userVO.setRoleList(collect);
-            return userVO;
-        }
-        roleList.addAll(collect);
+        roleList.add(roleVO);
         return userVO;
     }
 

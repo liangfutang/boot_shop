@@ -55,9 +55,9 @@ public interface UserService {
 
     /**
      * 为用户分配角色
-     * @param id
-     * @param userRoleParam
+     * @param userId
+     * @param roleId
      * @return
      */
-    UserVO addUserRoles(Integer id, UserRoleParam userRoleParam);
+    UserVO addUserRole(Integer userId, Integer roleId);
 }

@@ -19,6 +19,7 @@ public enum ResultStatus {
     OPERATE_TYPE_EXEC(6205, "操作类型异常"),
     MORE_ROLE_FAILURE(6206, "存在多个相同id的角色，数据异常"),
     NO_ROLE_FAILURE(6207, "没查到相应的角色"),
+    EXIST_ROLE_FAILURE(6208, "已拥有该角色"),
     NO_RIGHT_EXEC(6300, "当前权限不存在");
 
 
