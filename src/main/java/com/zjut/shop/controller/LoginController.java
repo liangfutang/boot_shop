@@ -14,6 +14,11 @@ import java.util.Map;
 @Slf4j
 public class LoginController {
 
+    /**
+     * 登录接口
+     * @param param
+     * @return
+     */
     @PostMapping("/api/private/v1/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> param) {
         log.info("收到:{}", param);
@@ -39,6 +44,6 @@ public class LoginController {
         }
         result.put("meta", meta);
         log.info("打印即将返回的内容:{}", result);
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

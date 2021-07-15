@@ -17,6 +17,12 @@ public class UserRoleController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 为用户分配一个角色
+     * @param userId
+     * @param roleId
+     * @return
+     */
     @PostMapping("/api/private/v1/user/{userId}/role/{roleId}")
     public ResponseEntity<?> addUserRole(@PathVariable Integer userId, @PathVariable Integer roleId) {
         log.info("为用户id:{},授权角色id:{}", userId, roleId);

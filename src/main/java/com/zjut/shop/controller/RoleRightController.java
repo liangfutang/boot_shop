@@ -1,6 +1,5 @@
 package com.zjut.shop.controller;
 
-import com.zjut.shop.query.RoleParam;
 import com.zjut.shop.query.RoleRightParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.RoleService;
