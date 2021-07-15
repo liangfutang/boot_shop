@@ -65,18 +65,20 @@ public class UserServiceImpl implements UserService {
         List<RoleVO> roleList = RoleServiceImpl.getRoleList();
         if (CollectionUtil.isEmpty(roleList)) return;
 
+        Random random = new Random();
         for (UserVO one : userVOList) {
-            // 超级管理员
+            List<RoleVO> oneRoleList = one.getRoleList();
+            // 超级管理员，拥有所有角色
             if (one.getId() == 0) {
-                one.setRoleList(roleList);
+                oneRoleList.addAll(roleList);
                 continue;
             }
-            Random random = new Random();
+            // 其他用户，随便分几个角色
             Set<RoleVO> roles = new HashSet<>();
             for (int i=0 ;i < 3; i++) {
                 roles.add(roleList.get(random.nextInt(roleList.size())));
             }
-            one.setRoleList(new ArrayList<>(roles));
+            oneRoleList.addAll(new ArrayList<>(roles));
         }
     }
 
@@ -132,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
         // 修改查到的用户状态
         UserVO userVO = users.get(0);
-        users.get(0).setMgState(mgState);
+        userVO.setMgState(mgState);
         return userVO;
     }
 
@@ -213,7 +215,7 @@ public class UserServiceImpl implements UserService {
         UserVO userVO = this.selectUserById(userId);
         // 判断要添加的角色是不是已经有了
         List<RoleVO> roleList = userVO.getRoleList();
-        if (CollectionUtil.isNotEmpty(roleList)) roleList.forEach(one -> {
+        roleList.forEach(one -> {
             if (roleId.equals(one.getId())) {
                 log.error("当前要添加的角色已经存在");
                 throw new ShopRuntimeException(ResultStatus.EXIST_ROLE_FAILURE);
@@ -251,12 +253,6 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(roleName) && roleName.contains(query)) return true;
 
         return false;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("删除前:" + userVOList);
-        userVOList.removeIf(one -> new Integer(5).equals(one.getId()));
-        System.out.println("删除后:" + userVOList);
     }
 
 }

@@ -3,6 +3,7 @@ package com.zjut.shop.vo;
 import lombok.Data;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Data
 public class UserVO {
@@ -20,6 +21,6 @@ public class UserVO {
      private String roleName;
 
 
-     private List<RoleVO> roleList;
+     private List<RoleVO> roleList = new CopyOnWriteArrayList<>();
 
 }
