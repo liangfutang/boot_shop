@@ -67,7 +67,7 @@ public class HomeController {
         MenuVO roles = new MenuVO();
         roles.setId(150);
         roles.setMenuName("角色管理");
-        // 商品列表的二级导航
+        // 角色列表的二级导航
         List<MenuVO> rolesChildren = new ArrayList<>();
         MenuVO oneRole = new MenuVO();
         oneRole.setId(151);
@@ -76,19 +76,43 @@ public class HomeController {
         rolesChildren.add(oneRole);
         roles.setChildren(rolesChildren);
 
+        // 商品管理
+        MenuVO goods = new MenuVO();
+        goods.setId(170);
+        goods.setMenuName("商品管理");
+        // 二级菜单
+        List<MenuVO> goodsChildren = new ArrayList<>();
+        MenuVO goodsList = new MenuVO();
+        goodsList.setId(171);
+        goodsList.setMenuName("商品列表");
+        goodsList.setPath("/goods");
+        MenuVO catParams = new MenuVO();
+        catParams.setId(172);
+        catParams.setMenuName("分类参数");
+        catParams.setPath("/params");
+        MenuVO goodsCat = new MenuVO();
+        goodsCat.setId(173);
+        goodsCat.setMenuName("商品分类");
+        goodsCat.setPath("/cats");
+        goodsChildren.add(goodsList);
+        goodsChildren.add(catParams);
+        goodsChildren.add(goodsCat);
+        goods.setChildren(goodsChildren);
+
         // 订单管理
         MenuVO orders = new MenuVO();
-        orders.setId(170);
+        orders.setId(190);
         orders.setMenuName("订单管理");
 
         // 数据统计
         MenuVO reports = new MenuVO();
-        reports.setId(190);
+        reports.setId(210);
         reports.setMenuName("数据统计");
 
         menus.add(userManger);
         menus.add(rights);
         menus.add(roles);
+        menus.add(goods);
         menus.add(orders);
         menus.add(reports);
 
