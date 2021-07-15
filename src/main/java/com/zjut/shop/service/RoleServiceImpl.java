@@ -42,29 +42,30 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
         if (CollectionUtil.isEmpty(authTree)) return;
 
         for (RoleVO one : roleList) {
+            List<AuthVO> authList = one.getAuthList();
             switch (one.getId()) {
                 // 大老板，需要所有的权限
                 case 1:
-                    one.setAuthList(authTree);
+                    authList.addAll(authTree);
                     break;
                 // 二老板，给他第一个和第二个
                 case 2:
-                    one.setAuthList(authTree.size() >= 2 ? authTree.subList(0, 1) : authTree.subList(0, 2));
+                    authList.addAll(authTree.size() >= 2 ? authTree.subList(0, 1) : authTree.subList(0, 2));
                     break;
                 // 三老板，给他第一个和第三个
                 case 3:
                     List<AuthVO> threeRole = new ArrayList<>();
                     threeRole.add(authTree.get(0));
                     if (threeRole.size() >= 3) threeRole.add(authTree.get(2));
-                    one.setAuthList(threeRole);
+                    authList.addAll(threeRole);
                     break;
                 // 四老板，给他第一个
                 case 4:
-                    one.setAuthList(authTree.subList(0, 1));
+                    authList.addAll(authTree.subList(0, 1));
                     break;
                 // 五老板，给他最后一个
                 default:
-                    one.setAuthList(authTree.subList(authTree.size()-1, authTree.size()));
+                    authList.addAll(authTree.subList(authTree.size()-1, authTree.size()));
                     break;
             }
         }
@@ -196,14 +197,13 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
             findRole = true;
             log.info("根据id找到对应的角色:{}", one);
 
-            authList = new ArrayList<>(one.getAuthList());
+            authList = one.getAuthList();
             if (CollectionUtil.isEmpty(authList)) {
                 log.info("当前角色下面不存在对应的权限");
                 throw new ShopRuntimeException(ResultStatus.NO_RIGHT_EXEC);
             }
             // 删除关系数据
             this.removeRight(authList, rightId);
-            one.setAuthList(authList);
         }
         if (!findRole) {
             log.info("没找到对应的权限");
@@ -223,12 +223,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
         // 仅为展示功能，所以不区分权限等级了，全都添加到一级
         // 查出所有的权限列表
         List<AuthVO> collect = AuthServiceImpl.getRightList().stream().filter(one -> rids.contains(one.getId())).collect(Collectors.toList());
-
-        if (CollectionUtil.isEmpty(authList)) {
-            roleVO.setAuthList(collect);
-        } else {
-            authList.addAll(collect);
-        }
+        authList.addAll(collect);
         return roleVO;
     }
 
@@ -255,9 +250,7 @@ public class RoleServiceImpl implements RoleService, InitializingBean {
         for (AuthVO one: authList) {
             // 对本级过滤
             if (rightId.equals(one.getId())) {
-                synchronized (roleList) {
-                    authList.remove(one);
-                }
+                authList.remove(one);
                 break;
             }
             // 过滤子权限

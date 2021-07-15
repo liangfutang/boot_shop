@@ -3,6 +3,7 @@ package com.zjut.shop.vo;
 import lombok.Data;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 角色
@@ -30,5 +31,5 @@ public class RoleVO {
     /**
      * 该角色下面所有的权限数据
      */
-    private List<AuthVO> authList;
+    private List<AuthVO> authList = new CopyOnWriteArrayList<>();
 }
