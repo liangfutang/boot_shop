@@ -21,6 +21,6 @@ public class UserVO {
      private String roleName;
 
 
-     private List<RoleVO> roleList = new CopyOnWriteArrayList<>();
+     private final List<RoleVO> roleList = new CopyOnWriteArrayList<>();
 
 }

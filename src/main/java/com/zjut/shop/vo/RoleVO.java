@@ -31,5 +31,5 @@ public class RoleVO {
     /**
      * 该角色下面所有的权限数据
      */
-    private List<AuthVO> authList = new CopyOnWriteArrayList<>();
+    private final List<AuthVO> authList = new CopyOnWriteArrayList<>();
 }
