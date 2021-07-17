@@ -7,6 +7,7 @@ import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.vo.FromURLVO;
 import com.zjut.shop.vo.PageResult;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class FromURLServiceImpl implements FromURLService {
     private static ThreadLocal<SimpleDateFormat> dataFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    @Getter
     private static final List<FromURLVO> fromURLList = new CopyOnWriteArrayList<>();
     static {
         String[] descs = {"奇瑞", "比亚迪", "大众", "华为", "中兴", "移动", "电信", "联通"};

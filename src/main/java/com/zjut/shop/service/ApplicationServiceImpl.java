@@ -6,6 +6,7 @@ import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.ApplicationParam;
 import com.zjut.shop.vo.ApplicationVO;
 import com.zjut.shop.vo.PageResult;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class ApplicationServiceImpl implements ApplicationService{
     private static ThreadLocal<SimpleDateFormat> dataFormat = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    @Getter
     private static final List<ApplicationVO> applicationList = new CopyOnWriteArrayList<>();
     static {
         String[] applicationName = {"产品部", "研发部", "品控部", "总裁办", "后勤保障", "厂房", "设备管控部"};
@@ -151,12 +153,5 @@ public class ApplicationServiceImpl implements ApplicationService{
         List<Boolean> containFalse = notEmptyResult.stream().filter(one -> !one).collect(Collectors.toList());
 
         return !(containFalse.size() > 0);
-    }
-
-    public static void main(String[] args) {
-        Random random = new Random();
-        for (int i=0; i<20; i++) {
-            System.out.println(random.nextInt(2) == 0 ? "Y" : "N");
-        }
     }
 }
