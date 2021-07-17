@@ -16,10 +16,10 @@ public interface ApplicationBizService {
     PageResult<List<ApplicationBizVO>> selectApplicationBizList(ApplicationBizParam applicationBizParam);
 
     /**
-     * 根据业务code查找
+     * 根据业务id查找
      * @return
      */
-    ApplicationBizVO selectByBizCode(String bizCode);
+    ApplicationBizVO selectByBizCode(Integer id);
 
     /**
      * 新增应用业务
@@ -37,11 +37,11 @@ public interface ApplicationBizService {
 
     /**
      * 根据bizCode修改应用业务状态
-     * @param bizCode
+     * @param id
      * @param status
      * @return
      */
-    ApplicationBizVO changeStatusByBizCode(String bizCode, String status);
+    ApplicationBizVO changeStatusByBizCode(Integer id, String status);
 
 
     /**
@@ -49,5 +49,5 @@ public interface ApplicationBizService {
      * @param bizCode
      * @return
      */
-    boolean deleteByBizCode(String bizCode);
+    boolean deleteByBizCode(Integer Id);
 }

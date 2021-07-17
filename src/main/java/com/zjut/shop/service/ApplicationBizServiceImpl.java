@@ -38,6 +38,7 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
         Random random = new Random();
         for (int i=0; i<40; i++) {
             ApplicationBizVO applicationBiz = new ApplicationBizVO();
+            applicationBiz.setId(i);
             applicationBiz.setApplicationId(applicationList.get(random.nextInt(applicationList.size())).getId());
             int i1 = random.nextInt(bizName.length);
             applicationBiz.setBizCode(bizCode[i1]);
@@ -80,8 +81,8 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
 
     @Override
-    public ApplicationBizVO selectByBizCode(String bizCode){
-        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> bizCode.equals(one.getBizCode())).collect(Collectors.toList());
+    public ApplicationBizVO selectByBizCode(Integer id){
+        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(collect)) {
             log.error("没找到对应的业务");
             throw new ShopRuntimeException(ResultStatus.NO_APP_BIZ_EXEC);
@@ -95,13 +96,15 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
     @Override
     public ApplicationBizVO addApplicationBiz(ApplicationBizParam applicationBizParam) {
-        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> applicationBizParam.getBizCode().equals(one.getBizCode())).collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(collect)) {
-            throw new ShopRuntimeException(ResultStatus.EXIST_APP_BIZ_EXEC);
-        }
         ApplicationVO applicationVO = applicationService.selectAppById(applicationBizParam.getApplicationId());
         if (applicationVO == null) {
             throw new ShopRuntimeException(ResultStatus.NO_APP_EXEC);
+        }
+
+        List<ApplicationBizVO> collect = applicationBizList.stream()
+                .filter(one -> applicationBizParam.getBizCode().equals(one.getBizCode()) && applicationBizParam.getApplicationId().equals(one.getApplicationId())).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(collect)) {
+            throw new ShopRuntimeException(ResultStatus.EXIST_APP_BIZ_EXEC);
         }
 
         ApplicationBizVO applicationBizVO = new ApplicationBizVO();
@@ -113,7 +116,7 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
     @Override
     public ApplicationBizVO updateByBizCode(ApplicationBizParam applicationBizParam) {
-        ApplicationBizVO applicationBizVO = this.selectByBizCode(applicationBizParam.getBizCode());
+        ApplicationBizVO applicationBizVO = this.selectByBizCode(applicationBizParam.getId());
         String bizName = applicationBizParam.getBizName();
         if (StringUtils.isNotBlank(bizName))  applicationBizVO.setBizName(bizName);
 
@@ -124,15 +127,15 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
     }
 
     @Override
-    public ApplicationBizVO changeStatusByBizCode(String bizCode, String status) {
-        ApplicationBizVO applicationBizVO = this.selectByBizCode(bizCode);
+    public ApplicationBizVO changeStatusByBizCode(Integer id, String status) {
+        ApplicationBizVO applicationBizVO = this.selectByBizCode(id);
         applicationBizVO.setStatus(status);
         return applicationBizVO;
     }
 
     @Override
-    public boolean deleteByBizCode(String bizCode) {
-        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> bizCode.equals(one.getBizCode())).collect(Collectors.toList());
+    public boolean deleteByBizCode(Integer id) {
+        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> id.equals(one.getId())).collect(Collectors.toList());
         if (collect.size() > 1) throw new ShopRuntimeException(ResultStatus.MORE_APP_BIZ_EXEC);
         if (collect.size() == 0) return true;
         return applicationBizList.remove(collect.get(0));
@@ -150,6 +153,22 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
         List<Boolean> notEmptyResult = new ArrayList<>();
 
+        String applicationId = applicationBiz.getApplicationId();
+        String applicationIdParam = applicationBizParam.getApplicationId();
+        if (StringUtils.isBlank(applicationId) && StringUtils.isBlank(applicationIdParam)) {
+            notEmptyResult.add(true);
+        } else {
+            notEmptyResult.add(StringUtils.isNotBlank(applicationId) && applicationId.contains(applicationIdParam));
+        }
+
+        String bizCode = applicationBiz.getBizCode();
+        String bizCodeParam = applicationBizParam.getBizCode();
+        if (StringUtils.isBlank(bizCode) && StringUtils.isBlank(bizCodeParam)) {
+            notEmptyResult.add(true);
+        } else {
+            notEmptyResult.add(StringUtils.isNotBlank(bizCode) && bizCode.contains(bizCodeParam));
+        }
+
         String bizName = applicationBiz.getBizName();
         String bizNameParam = applicationBizParam.getBizName();
         if (StringUtils.isBlank(bizName) && StringUtils.isBlank(bizNameParam)) {
@@ -160,10 +179,12 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
         Integer fromUrl = applicationBiz.getFromUrl();
         Integer fromUrlParam = applicationBizParam.getFromUrl();
-        if (fromUrl==null && fromUrlParam==null) {
-            notEmptyResult.add(true);
-        } else {
-            notEmptyResult.add(fromUrl!=null && fromUrl.equals(fromUrlParam));
+        if (fromUrlParam != null) {
+            if (fromUrl == null) {
+                notEmptyResult.add(false);
+            } else {
+                notEmptyResult.add(fromUrl.equals(fromUrlParam));
+            }
         }
 
         String status = applicationBiz.getStatus();

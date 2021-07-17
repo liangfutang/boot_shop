@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class ApplicationBizVO {
 
+    private Integer id;
+
     /**
      * 应用id
      */
