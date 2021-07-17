@@ -42,4 +42,11 @@ public interface ApplicationService {
      * @return
      */
     ApplicationVO updateApp(ApplicationParam applicationParam);
+
+    /**
+     * 新增一个应用
+     * @param applicationParam
+     * @return
+     */
+    ApplicationVO insert(ApplicationParam applicationParam);
 }

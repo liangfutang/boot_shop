@@ -1,5 +1,9 @@
 package com.zjut.shop.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.zjut.shop.enums.ResultStatus;
+import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.ApplicationBizParam;
 import com.zjut.shop.vo.ApplicationBizVO;
 import com.zjut.shop.vo.ApplicationVO;
@@ -7,6 +11,7 @@ import com.zjut.shop.vo.FromURLVO;
 import com.zjut.shop.vo.PageResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +50,9 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
         }
     }
 
+    @Autowired
+    private ApplicationService applicationService;
+
     @Override
     public PageResult<List<ApplicationBizVO>> selectApplicationBizList(ApplicationBizParam applicationBizParam) {
 // 模糊查询
@@ -68,6 +76,66 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
         }
 
         return new PageResult<>(currentUserTotal, afterFilterApp.subList(start, end));
+    }
+
+
+    @Override
+    public ApplicationBizVO selectByBizCode(String bizCode){
+        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> bizCode.equals(one.getBizCode())).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(collect)) {
+            log.error("没找到对应的业务");
+            throw new ShopRuntimeException(ResultStatus.NO_APP_BIZ_EXEC);
+        }
+        if (collect.size() > 1) {
+            log.error("没找到对应的业务");
+            throw new ShopRuntimeException(ResultStatus.MORE_APP_BIZ_EXEC);
+        }
+        return collect.get(0);
+    }
+
+    @Override
+    public ApplicationBizVO addApplicationBiz(ApplicationBizParam applicationBizParam) {
+        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> applicationBizParam.getBizCode().equals(one.getBizCode())).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(collect)) {
+            throw new ShopRuntimeException(ResultStatus.EXIST_APP_BIZ_EXEC);
+        }
+        ApplicationVO applicationVO = applicationService.selectAppById(applicationBizParam.getApplicationId());
+        if (applicationVO == null) {
+            throw new ShopRuntimeException(ResultStatus.NO_APP_EXEC);
+        }
+
+        ApplicationBizVO applicationBizVO = new ApplicationBizVO();
+        BeanUtil.copyProperties(applicationBizParam, applicationBizVO);
+        applicationBizList.add(applicationBizVO);
+        return applicationBizVO;
+    }
+
+
+    @Override
+    public ApplicationBizVO updateByBizCode(ApplicationBizParam applicationBizParam) {
+        ApplicationBizVO applicationBizVO = this.selectByBizCode(applicationBizParam.getBizCode());
+        String bizName = applicationBizParam.getBizName();
+        if (StringUtils.isNotBlank(bizName))  applicationBizVO.setBizName(bizName);
+
+        Integer fromUrl = applicationBizParam.getFromUrl();
+        if (fromUrl != null) applicationBizVO.setFromUrl(fromUrl);
+
+        return applicationBizVO;
+    }
+
+    @Override
+    public ApplicationBizVO changeStatusByBizCode(String bizCode, String status) {
+        ApplicationBizVO applicationBizVO = this.selectByBizCode(bizCode);
+        applicationBizVO.setStatus(status);
+        return applicationBizVO;
+    }
+
+    @Override
+    public boolean deleteByBizCode(String bizCode) {
+        List<ApplicationBizVO> collect = applicationBizList.stream().filter(one -> bizCode.equals(one.getBizCode())).collect(Collectors.toList());
+        if (collect.size() > 1) throw new ShopRuntimeException(ResultStatus.MORE_APP_BIZ_EXEC);
+        if (collect.size() == 0) return true;
+        return applicationBizList.remove(collect.get(0));
     }
 
 

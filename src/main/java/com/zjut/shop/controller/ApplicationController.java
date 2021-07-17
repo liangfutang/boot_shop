@@ -83,4 +83,15 @@ public class ApplicationController {
         log.info("删除应用的id:{}", id);
         return new ResponseEntity<>(BaseResult.handlerSuccess("根据id删除应用成功", applicationService.selectAppById(id)), HttpStatus.OK);
     }
+
+    /**
+     * 新增应用
+     * @param applicationParam
+     * @return
+     */
+    @PostMapping("/api/private/v1/application")
+    public ResponseEntity<?> insertApp(@RequestBody ApplicationParam applicationParam) {
+        log.info("新增应用:{}", applicationParam);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("根据id删除应用成功", applicationService.insert(applicationParam)), HttpStatus.OK);
+    }
 }

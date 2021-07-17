@@ -23,6 +23,9 @@ public enum ResultStatus {
     NO_RIGHT_EXEC(6300, "当前权限不存在"),
     NO_APP_EXEC(6400, "没有对应的应用信息"),
     MORE_APP_EXEC(6401, "存在多个应用信息"),
+    NO_APP_BIZ_EXEC(6402, "没有对应的应用业务信息"),
+    MORE_APP_BIZ_EXEC(6403, "存在多个应用业务信息"),
+    EXIST_APP_BIZ_EXEC(6404, "应用业务信息已经存在"),
     NO_FROMURL_EXEC(6500, "对应前缀不存在"),
     MORE_FROMURL_EXEC(6501, "存在多个前缀信息"),
     EXITS_FROMURL_EXEC(6502, "当前应用已经存在");

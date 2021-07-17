@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +25,7 @@ public class ApplicationBizController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/api/private/v1/application")
+    @GetMapping("/api/private/v1/application/biz")
     public ResponseEntity<?> selectList(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize) {
         ApplicationBizParam applicationBizParam = new ApplicationBizParam();
         applicationBizParam.setPageNum(pageNum - 1);
@@ -32,6 +33,18 @@ public class ApplicationBizController {
 
         log.info("查询应用下面业务的参数:{}", applicationBizParam);
         return new ResponseEntity<>(BaseResult.handlerSuccess("查询应用业务列表成功", applicationBizService.selectApplicationBizList(applicationBizParam)), HttpStatus.OK);
+    }
+
+    /**
+     * 根据业务code查应用下业务
+     * @param bizCode
+     * @return
+     */
+    @GetMapping("/api/private/v1/application/biz/{bizCode}")
+    public ResponseEntity<?> selectByBizCode(@PathVariable String bizCode) {
+
+        log.info("根据业务code查询应用下面业务的参数:{}", bizCode);
+        return new ResponseEntity<>(BaseResult.handlerSuccess("查询应用业务成功", applicationBizService.selectByBizCode(bizCode)), HttpStatus.OK);
     }
 
 }

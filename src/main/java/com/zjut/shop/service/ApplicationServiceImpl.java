@@ -1,5 +1,6 @@
 package com.zjut.shop.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.zjut.shop.enums.ResultStatus;
 import com.zjut.shop.execption.ShopRuntimeException;
@@ -103,6 +104,18 @@ public class ApplicationServiceImpl implements ApplicationService{
         if (StringUtils.isNotBlank(principal)) {
             applicationVO.setPrincipal(principal);
         }
+        return applicationVO;
+    }
+
+    @Override
+    public ApplicationVO insert(ApplicationParam applicationParam) {
+        ApplicationVO applicationVO = new ApplicationVO();
+        BeanUtil.copyProperties(applicationParam, applicationVO);
+
+        applicationVO.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+        applicationVO.setStatus("Y");
+        applicationVO.setGmtCreate(new Date());
+        applicationList.add(applicationVO);
         return applicationVO;
     }
 
