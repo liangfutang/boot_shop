@@ -1,7 +1,5 @@
 package com.zjut.shop.controller;
 
-import com.zjut.shop.enums.ResultStatus;
-import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.ApplicationParam;
 import com.zjut.shop.response.BaseResult;
 import com.zjut.shop.service.ApplicationService;
@@ -25,7 +23,7 @@ public class ApplicationController {
      * @return
      */
     @GetMapping("/api/private/v1/application")
-    public ResponseEntity<?> selectApplicationList (@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize
+    public ResponseEntity<?> selectApplicationList(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize
             , @RequestParam(defaultValue = "") String id, @RequestParam(defaultValue = "") String applicationName
             , @RequestParam(defaultValue = "") String principal, @RequestParam(defaultValue = "") String status) {
         log.info("查询短信应用列表参数,pageNum:{},pageSize:{}", pageNum, pageSize);
