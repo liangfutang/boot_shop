@@ -1,7 +1,6 @@
 package com.zjut.shop.controller;
 
 import com.zjut.shop.enums.ResultStatus;
-import com.zjut.shop.execption.ShopRuntimeException;
 import com.zjut.shop.query.UserAddParam;
 import com.zjut.shop.query.UserParam;
 import com.zjut.shop.response.BaseResult;
