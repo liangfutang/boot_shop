@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -44,8 +41,10 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
             applicationBiz.setBizCode(bizCode[i1]);
             applicationBiz.setBizName(bizName[i1]);
             applicationBiz.setStatus(random.nextInt(2) == 0 ? "Y" : "N");
-            String createTime = dataFormat.get().format(new Date(System.currentTimeMillis() - random.nextInt(900000000)));
+            Date date = new Date(System.currentTimeMillis() - random.nextInt(900000000));
+            String createTime = dataFormat.get().format(date);
             applicationBiz.setGmtCreateStr(createTime);
+            applicationBiz.setGmtCreate(date);
             applicationBiz.setFromUrl(fromURLList.get(random.nextInt(fromURLList.size())).getValue());
             applicationBizList.add(applicationBiz);
         }
@@ -57,7 +56,10 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
     @Override
     public PageResult<List<ApplicationBizVO>> selectApplicationBizList(ApplicationBizParam applicationBizParam) {
 // 模糊查询
-        List<ApplicationBizVO> afterFilterApp = applicationBizList.stream().filter(one -> this.filterApplication(one, applicationBizParam)).collect(Collectors.toList());
+        List<ApplicationBizVO> afterFilterApp = applicationBizList.stream()
+                .filter(one -> this.filterApplication(one, applicationBizParam))
+                .sorted(Comparator.comparing(ApplicationBizVO::getGmtCreate).reversed())
+                .collect(Collectors.toList());
 
         // 当前用户数
         int currentUserTotal = afterFilterApp.size();
@@ -109,6 +111,9 @@ public class ApplicationBizServiceImpl implements ApplicationBizService{
 
         ApplicationBizVO applicationBizVO = new ApplicationBizVO();
         BeanUtil.copyProperties(applicationBizParam, applicationBizVO);
+        Date date = new Date();
+        applicationBizVO.setGmtCreate(date);
+        applicationBizVO.setGmtCreateStr(dataFormat.get().format(date));
         applicationBizList.add(applicationBizVO);
         return applicationBizVO;
     }

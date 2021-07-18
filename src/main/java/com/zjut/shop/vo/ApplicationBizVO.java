@@ -2,6 +2,8 @@ package com.zjut.shop.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class ApplicationBizVO {
 
@@ -35,4 +37,9 @@ public class ApplicationBizVO {
      * 创建时间字符串
      */
     private String gmtCreateStr;
+
+    /**
+     * 创建时间字符串
+     */
+    private Date gmtCreate;
 }
